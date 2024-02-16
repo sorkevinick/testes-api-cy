@@ -4,12 +4,12 @@ describe('Testes da Funcionalidade Usuários', () => {
      let nome = `Fulano ${Math.floor(Math.random() * 100000)}`
      let email = `fulano${Math.floor(Math.random() * 100000)}@gmail.com`
 
-     it.only('Deve validar contrato de usuários', () => {
+     it('Deve validar contrato de usuários', () => {
           //TODO: 
           cy.request('usuarios')
-            .its('headers')
-            .its('content-type')
-            .should('include', 'application/json');
+               .its('headers')
+               .its('content-type')
+               .should('include', 'application/json');
 
      });
 
@@ -41,24 +41,27 @@ describe('Testes da Funcionalidade Usuários', () => {
           })
      });
 
-     it('Deve editar um usuário previamente cadastrado', () => {
+     it.only('Deve editar um usuário previamente cadastrado', () => {
           //TODO:
           cy.request('usuarios').then(response => {
-               let id = response.body.produtos[0]._id
+               let id = response.body.usuarios[1]._id
                cy.request({
                     //TODO: PAREI AQUI
                     method: 'PUT',
-                    url: `produtos/${id}`,
-                    headers: { authorization: token },
+                    url: `usuarios/${id}`,
+                    // headers: { authorization: token },
                     body:
                     {
-                         "nome": "Produto Editado 45642083",
-                         "preco": 100,
-                         "descricao": "Produto editado",
-                         "quantidade": 100
+                         "nome": "Fulano da Silva 123456",
+                         "email": "beltrano123456@qa.com.br",
+                         "password": "teste",
+                         "administrador": "true"
+
                     }
 
-               })
+               }).then((response) => {
+                         expect(response.body.message).to.equal("Registro alterado com sucesso")
+                    })
           })
      });
 
@@ -66,18 +69,18 @@ describe('Testes da Funcionalidade Usuários', () => {
           //TODO: 
           cy.request('usuarios').then(response => {
                let id = response.body.usuarios[0]._id;
-   
+
                // Continuar com a implementação...
                cy.request({
-                   method: 'DELETE',
-                   url: `usuarios/${id}`,
-                   headers: { authorization: 'seu-token-aqui' },
+                    method: 'DELETE',
+                    url: `usuarios/${id}`,
+                    headers: { authorization: token },
                }).then(response => {
-                   // Verificar a resposta da API após a exclusão
-                   expect(response.status).to.eq(200);
-                   expect(response.body.message).to.equal("Registro excluído com sucesso");
+                    // Verificar a resposta da API após a exclusão
+                    expect(response.status).to.eq(200);
+                    expect(response.body.message).to.equal("Registro excluído com sucesso");
                });
-           })
+          })
      });
 
 
